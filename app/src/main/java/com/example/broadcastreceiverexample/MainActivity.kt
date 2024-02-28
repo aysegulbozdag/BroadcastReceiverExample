@@ -12,12 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.broadcastreceiverexample.ui.theme.BroadcastReceiverExampleTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,12 +32,20 @@ class MainActivity : ComponentActivity() {
             BatteryBroadcastReceiver(),
             IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         )
+
+
         setContent {
             BroadcastReceiverExampleTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val context = LocalContext.current
+                    val intent = Intent("com.example.custom_action").apply {
+                        putExtra("message", "Merhaba dünya!")
+                    }
+                    registerReceiver(MyBroadcastReceiver(), IntentFilter("com.example.custom_action"))
+                    context.sendBroadcast(intent)
                     Greeting("Android")
                 }
             }
